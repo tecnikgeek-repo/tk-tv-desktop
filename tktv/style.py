@@ -53,6 +53,7 @@ if sys.platform == "darwin":
     ICO_HISTORY = "\ue889"
     ICO_LANG = "\ue8e2"
     ICO_COFFEE = "\ue541"
+    ICO_LOCK = "\ue897"
     ICON_SCALE = 1.2
     UI_FAMILY = ".AppleSystemUIFont"
 else:
@@ -93,6 +94,7 @@ else:
     ICO_HISTORY = ""   # History
     ICO_LANG = ""      # Characters
     ICO_COFFEE = ICO_HEART   # tra le icone di Windows non c'è la tazza
+    ICO_LOCK = ""      # Lock
     ICON_SCALE = 1.0
     UI_FAMILY = "Segoe UI"
 

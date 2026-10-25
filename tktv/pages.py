@@ -42,6 +42,33 @@ def _card_label(text, glyph):
     return row
 
 
+def _passo(glyph, titolo, testo):
+    """Un passo della card «Come funziona»: icona in un riquadro colorato, titolo e una riga di spiegazione."""
+    w = QWidget()
+    w.setObjectName("passo")
+    w.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+    w.setStyleSheet(f"#passo {{ background:{S.NAVY}; border:1px solid {S.NAVY3}; border-radius:14px; }}")
+    lay = QVBoxLayout(w)
+    lay.setContentsMargins(16, 16, 16, 16)
+    lay.setSpacing(8)
+    ic = QLabel(glyph)
+    ic.setFont(S.icon_font(20))
+    ic.setFixedSize(44, 44)
+    ic.setAlignment(Qt.AlignmentFlag.AlignCenter)
+    ic.setStyleSheet(f"color:{S.ACCENT_L}; background:rgba(225,29,72,0.16); border-radius:12px;")
+    t = QLabel(titolo)
+    t.setStyleSheet("color:#ffffff; font-size:14px; font-weight:800; background:transparent;")
+    s = QLabel(testo)
+    s.setWordWrap(True)
+    s.setObjectName("muted")
+    s.setStyleSheet("background:transparent;")
+    lay.addWidget(ic)
+    lay.addWidget(t)
+    lay.addWidget(s)
+    lay.addStretch(1)
+    return w
+
+
 def _page_with_header(title, subtitle, on_back):
     page = QWidget()
     root = QVBoxLayout(page)
@@ -128,11 +155,14 @@ class SettingsPage(QWidget):
         legale.setObjectName("muted")
         lay.addWidget(legale)
         col.addWidget(card)
+        col.addWidget(self._come_funziona())
 
         card3, lay3 = _card()
         card3.setFixedWidth(620)
         lay3.addLayout(_card_label("All'avvio", S.ICO_HISTORY))
         self.resume = QCheckBox("Riparti dall'ultimo canale che stavi guardando")
+        from tktv.tk_licenza_qt import stile_casella
+        self.resume.setStyleSheet(stile_casella())   # casella ben visibile su fondo scuro, come quella delle statistiche
         self.resume.setCursor(Qt.CursorShape.PointingHandCursor)
         self.resume.toggled.connect(self.resume_changed)
         lay3.addWidget(self.resume)
@@ -174,12 +204,6 @@ class SettingsPage(QWidget):
         lay4.addLayout(row4)
         col.addWidget(card4)
 
-        note = QLabel("Incolla il link della tua lista (.m3u o .m3u8) oppure scegli un file sul "
-                      f"{COMPUTER}. Il link resta salvato solo su questo {COMPUTER}.")
-        note.setWordWrap(True)
-        note.setObjectName("muted")
-        note.setFixedWidth(620)
-        col.addWidget(note)
         col.addStretch(1)
         self.url.textChanged.connect(self._refresh_button)
         self._initial = ""
@@ -233,6 +257,19 @@ class SettingsPage(QWidget):
             self.ok.setText("Salva e ricarica")
         else:
             self.ok.setText("Carica canali")
+
+    def _come_funziona(self):
+        """Card «Come funziona»: tre passi affiancati al posto della vecchia nota in grigio."""
+        card, lay = _card()
+        card.setFixedWidth(620)
+        lay.addLayout(_card_label("Come funziona", S.ICO_INFO))
+        riga = QHBoxLayout()
+        riga.setSpacing(12)
+        riga.addWidget(_passo(S.ICO_LINK, "Incolla il link", "Il link della tua lista, in formato .m3u o .m3u8."), 1)
+        riga.addWidget(_passo(S.ICO_FOLDER, "Oppure un file", f"Hai la lista salvata? Scegli il file .m3u sul {COMPUTER}."), 1)
+        riga.addWidget(_passo(S.ICO_LOCK, "Resta solo qui", f"Il link è salvato solo su questo {COMPUTER}: non va a nessun server."), 1)
+        lay.addLayout(riga)
+        return card
 
     def _browse(self):
         path, _ = QFileDialog.getOpenFileName(self, "Scegli la playlist", "", "Playlist (*.m3u *.m3u8);;Tutti i file (*)")
