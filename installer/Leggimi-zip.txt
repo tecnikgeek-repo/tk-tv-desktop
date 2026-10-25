@@ -1,0 +1,39 @@
+tk-tv per Windows - installazione
+=================================
+
+1. Tasto destro sul file ZIP  >  "Estrai tutto..."  >  Estrai.
+2. Apri la cartella estratta e fai doppio clic su  "Installa tk-tv".
+3. Nella finestra di tk-tv premi  "Installa".
+
+Se Windows mostra un avviso di sicurezza (file scaricato da internet):
+  - "Apri file - Avviso di sicurezza": premi  Esegui
+  - "PC protetto da Windows": premi  Ulteriori informazioni  >  Esegui comunque
+
+Non servono permessi di amministratore. Dopo l'installazione la cartella estratta
+e il file ZIP si possono eliminare.
+
+Al primo avvio incolla il link della tua lista M3U (o scegli un file .m3u sul PC):
+la lista dei canali si crea da quel link.
+
+tk-tv si aggiorna da solo: quando esce una nuova versione compare il tasto verde
+in alto.
+
+Disinstallazione: Impostazioni > App > App installate > tk-tv > Disinstalla.
+
+COSA VA IN RETE E COSA RESTA SUL COMPUTER
+  - Il link della tua lista, i preferiti e le impostazioni restano su questo PC.
+  - tk-tv contatta gli indirizzi della tua lista (canali e loghi), Google, DuckDuckGo e Twitch
+    (icone di "App e pay TV") e pietrodefilippis.it per controllare gli aggiornamenti
+    (al massimo ogni 12 ore).
+  - Statistiche anonime (nome, versione e sistema, con un codice casuale) solo se le
+    accendi tu, nella finestra di benvenuto o nelle Impostazioni.
+
+LICENZA
+tk-tv è software libero e gratuito, con tutte le funzioni, sotto licenza GNU AGPL-3.0.
+Codice sorgente: https://github.com/tecnikgeek-repo/tk-tv-desktop
+Licenze dei componenti inclusi (Python, Qt, VLC...): cartella "licenze" del programma
+oppure Informazioni > Licenze e codice sorgente.
+Il nome tk-tv e il logo non sono coperti dalla licenza: una versione modificata deve
+avere un nome diverso.
+
+Creato da TecnikGeek - https://pietrodefilippis.it

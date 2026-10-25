@@ -1,0 +1,45 @@
+tk-tv per Mac — installazione
+=============================
+
+1. Trascina «tk-tv» sulla cartella «Applicazioni».
+2. Apri tk-tv da Applicazioni (o da Launchpad).
+3. Al primo avvio incolla il link della tua lista M3U (o scegli un file .m3u sul Mac).
+
+PRIMO AVVIO
+L'app non è firmata con un certificato Apple, quindi al primo avvio macOS può bloccarla
+("impossibile verificare lo sviluppatore" oppure "l'app è danneggiata").
+
+  • Apri Impostazioni di Sistema → Privacy e sicurezza, scorri in basso e premi
+    «Apri comunque» accanto a tk-tv, poi conferma.
+
+  • In alternativa, da Terminale:
+        xattr -dr com.apple.quarantine "/Applications/TK TV.app"
+
+Serve farlo una sola volta. Il primo avvio può richiedere qualche secondo in più.
+
+COMANDI
+  ⌘F                      cerca un canale
+  ↑ ↓                     canale precedente / successivo
+  numeri                  vai al canale
+  F · doppio clic         schermo intero (Esc per uscire)
+  Spazio                  pausa
+  M · rotellina           audio / volume
+
+Esistono due versioni: «arm64» per i Mac con chip Apple (M1, M2…) e «x86_64» per i Mac Intel.
+
+COSA VA IN RETE E COSA RESTA SUL MAC
+  • Il link della tua lista, i preferiti e le impostazioni restano su questo Mac.
+  • tk-tv contatta gli indirizzi della tua lista (canali e loghi), Google, DuckDuckGo e Twitch
+    (icone di «App e pay TV») e pietrodefilippis.it per controllare gli aggiornamenti
+    (al massimo ogni 12 ore).
+  • Statistiche anonime (nome, versione e sistema, con un codice casuale) solo se le
+    accendi tu, nella finestra di benvenuto o nelle Impostazioni.
+
+LICENZA
+tk-tv è software libero e gratuito, con tutte le funzioni, sotto licenza GNU AGPL-3.0.
+Codice sorgente: https://github.com/tecnikgeek-repo/tk-tv-desktop
+Licenze dei componenti inclusi (Python, Qt, VLC…): Informazioni → Licenze e codice sorgente.
+Il nome tk-tv e il logo non sono coperti dalla licenza: una versione modificata deve
+avere un nome diverso.
+
+Creato da TecnikGeek — https://pietrodefilippis.it

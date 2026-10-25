@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+dist/
+vendor/
+.venv-mac/
+build/
+assets/tk-tv.icns
+build-licenze/

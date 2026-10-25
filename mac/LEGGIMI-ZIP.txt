@@ -1,0 +1,43 @@
+tk-tv per Mac — quale file aprire
+=================================
+
+Dentro questo ZIP ci sono due versioni di tk-tv: apri solo quella adatta al tuo Mac.
+
+COME SAPERE CHE MAC HAI
+Menu Apple () in alto a sinistra → «Informazioni su questo Mac»:
+
+  • c'è scritto «Chip Apple M1», «M2», «M3», «M4»…
+        → apri  tk-tv-player-mac-…-arm64.dmg
+
+  • c'è scritto «Processore … Intel»
+        → apri  tk-tv-player-mac-…-x86_64.dmg
+
+INSTALLAZIONE
+1. Fai doppio clic sul file .dmg giusto.
+2. Nella finestra che si apre trascina «tk-tv» sulla cartella «Applicazioni».
+3. Apri tk-tv da Applicazioni (o da Launchpad) e incolla il link della tua lista M3U
+   (o scegli un file .m3u sul Mac).
+
+PRIMO AVVIO
+L'app non è firmata con un certificato Apple, quindi al primo avvio macOS può bloccarla.
+Apri Impostazioni di Sistema → Privacy e sicurezza, scorri in basso e premi «Apri comunque»
+accanto a tk-tv, poi conferma. Serve farlo una sola volta.
+
+Gli aggiornamenti successivi arrivano da soli, dentro l'app.
+
+COSA VA IN RETE E COSA RESTA SUL MAC
+  • Il link della tua lista, i preferiti e le impostazioni restano su questo Mac.
+  • tk-tv contatta gli indirizzi della tua lista (canali e loghi), Google, DuckDuckGo e Twitch
+    (icone di «App e pay TV») e pietrodefilippis.it per controllare gli aggiornamenti
+    (al massimo ogni 12 ore).
+  • Statistiche anonime (nome, versione e sistema, con un codice casuale) solo se le
+    accendi tu, nella finestra di benvenuto o nelle Impostazioni.
+
+LICENZA
+tk-tv è software libero e gratuito, con tutte le funzioni, sotto licenza GNU AGPL-3.0.
+Codice sorgente: https://github.com/tecnikgeek-repo/tk-tv-desktop
+Licenze dei componenti inclusi (Python, Qt, VLC…): Informazioni → Licenze e codice sorgente.
+Il nome tk-tv e il logo non sono coperti dalla licenza: una versione modificata deve
+avere un nome diverso.
+
+Creato da TecnikGeek — https://pietrodefilippis.it
