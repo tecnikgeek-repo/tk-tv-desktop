@@ -37,6 +37,10 @@ if (-not (Test-Path $update) -or -not (Test-Path $install)) {
 # 'windows-zip' = aggiornamento automatico, 'windows-install' = ZIP di installazione per nuovi PC
 $assets = @(@{ key = 'windows-zip'; file = (Resolve-Path $update).Path },
             @{ key = 'windows-install'; file = (Resolve-Path $install).Path })
+# installazione .exe: e' il download «Windows» della vetrina (pietrodefilippis.it/scarica-programma/...)
+$setupWin = "dist	k-tv-setup-$version.exe"
+if (-not (Test-Path $setupWin)) { throw "Manca l'installazione ${setupWin}: rifai installeruild.ps1" }
+$assets += @{ key = 'windows'; file = (Resolve-Path $setupWin).Path }
 
 # --- manifest
 $manifest = [ordered]@{
@@ -71,7 +75,7 @@ scp -q -F $sshConfig $manifestFile "pietrodefilippis:~/public_html/updates/$slug
 # archivia le versioni precedenti (tiene solo la penultima in old/), poi attiva il manifest
 $names = ($assets | ForEach-Object { Split-Path $_.file -Leaf }) -join ' '
 $remote = @'
-cd ~/__DIR__ && move=; for f in __SLUG__-*; do keep=0; for k in __NAMES__; do [ $f = $k ] && keep=1; done; [ $keep = 1 ] || move=$move' '$f; done; if [ ${#move} -gt 0 ]; then rm -f old/*; mv -f $move old/; fi; mv -f ~/public_html/updates/__SLUG__.json.new ~/public_html/updates/__SLUG__.json && ls -la ~/__DIR__ ~/__DIR__/old
+cd ~/__DIR__ && move=; for f in __SLUG__-* tk-tv-setup-*; do keep=0; for k in __NAMES__; do [ $f = $k ] && keep=1; done; [ $keep = 1 ] || move=$move' '$f; done; if [ ${#move} -gt 0 ]; then rm -f old/*; mv -f $move old/; fi; mv -f ~/public_html/updates/__SLUG__.json.new ~/public_html/updates/__SLUG__.json && ls -la ~/__DIR__ ~/__DIR__/old
 '@
 # NB: niente virgolette doppie nel comando remoto: PowerShell 5 le toglie passando l'argomento a ssh
 $remote = $remote.Replace('__DIR__', $remoteDir).Replace('__NAMES__', $names).Replace('__SLUG__', $slug).Trim()
