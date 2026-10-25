@@ -21,6 +21,38 @@ class _Loader(QObject):
 
 
 class MainWindow(QMainWindow):
+    def show_info(self):
+        """Informazioni: finestra comune a tutti i software TK (libreria), colore di tk-tv. La pagina con le
+        scorciatoie resta raggiungibile da «Tastiera e mouse»."""
+        self._informazioni().exec()
+
+    def _informazioni(self):
+        from tktv import VERSION, URL_SORGENTE, pro
+        from tktv.icon import badge_pixmap
+        from tktv.tk_licenza_qt import InformazioniDialog
+        from tktv.util import app_data_dir
+        try:
+            from tktv import engine
+            vlc = "VLC " + engine.load().libvlc_get_version().decode().split(" ")[0]
+        except Exception:
+            vlc = "VLC non trovato"
+        finestra = {}
+
+        def tastiera():
+            # chiude Informazioni e mostra la pagina con le scorciatoie di tastiera e mouse
+            finestra["d"].accept()
+            QTimer.singleShot(0, lambda: self.stack.setCurrentWidget(self.info_page))
+
+        finestra["d"] = InformazioniDialog(
+            pro.licenza(), APP_TITLE, VERSION, "Lettore di liste M3U con gruppi, ricerca e preferiti. tk-tv è solo un "
+            "lettore: non contiene né fornisce canali.", badge_pixmap(136, 36), "#e11d48",
+            dati=[("Motore video", vlc, "Incluso nel programma (VideoLAN, LGPL)."),
+                  ("Le tue impostazioni", app_data_dir(), "Il link della tua lista resta solo su questo computer.")],
+            url_sorgente=URL_SORGENTE, cartella_licenze=pro.cartella_licenze(),
+            su_aggiornamenti=lambda: self.updates.check(manual=True),
+            pulsanti=[("Tastiera e mouse", tastiera)], parent=self)
+        return finestra["d"]
+
     def __init__(self):
         super().__init__()
         self.store = Store()
@@ -56,7 +88,7 @@ class MainWindow(QMainWindow):
         c.toggle_favorite.connect(self.toggle_favorite)
         c.reload_requested.connect(self.reload)
         c.settings_requested.connect(self.open_settings)
-        c.info_requested.connect(lambda: self.stack.setCurrentWidget(self.info_page))
+        c.info_requested.connect(self.show_info)
         c.update_requested.connect(self.updates.show_dialog)
 
         pl = self.player_page
