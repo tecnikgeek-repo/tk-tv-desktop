@@ -203,7 +203,8 @@ class SettingsPage(QWidget):
         self.stats = pro.casella_statistiche()
         self.stats.setCursor(Qt.CursorShape.PointingHandCursor)
         lay5.addWidget(self.stats)
-        stats_txt = QLabel(self.stats.toolTip())
+        from tktv.tk_licenza_qt import TESTO_STATISTICHE
+        stats_txt = QLabel(TESTO_STATISTICHE)
         stats_txt.setWordWrap(True)
         stats_txt.setObjectName("muted")
         lay5.addWidget(stats_txt)

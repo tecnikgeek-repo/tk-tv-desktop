@@ -268,7 +268,8 @@ def run(argv):
 
     app = QApplication(argv)
     app.setStyle("Fusion")
-    app.setStyleSheet(S.QSS)
+    from tktv.tk_licenza_qt import stile_caselle_globale
+    app.setStyleSheet(S.QSS + stile_caselle_globale())
     app.setWindowIcon(app_icon())
 
     class Bridge(QObject):

@@ -139,6 +139,7 @@ def build(argv):
     font = S.ui_font()
     font.setPixelSize(15)
     app.setFont(font)
-    app.setStyleSheet(QSS)
+    from tktv.tk_licenza_qt import stile_caselle_globale
+    app.setStyleSheet(QSS + stile_caselle_globale())
     app.setWindowIcon(app_icon())
     return app, MainWindow()
