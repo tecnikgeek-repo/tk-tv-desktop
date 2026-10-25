@@ -21,6 +21,15 @@ from tktv.tk_aggiornamento import asset_valido
 from tktv.playlist import _ssl_context
 from tktv.util import app_data_dir, app_root
 
+def _codice_conteggio():
+    """«; <codice>» per il manifest: conta l'installazione una volta sola anche se cambia rete (Privacy 4-ter)."""
+    try:
+        from tktv import tk_licenza
+        return f"; {tk_licenza.CODICE_CONTEGGIO}" if tk_licenza.CODICE_CONTEGGIO else ""
+    except Exception:
+        return ""
+
+
 IS_MAC = sys.platform == "darwin"
 MANIFEST_URL = ("https://pietrodefilippis.it/updates/tk-tv-player-mac.json" if IS_MAC
                 else "https://pietrodefilippis.it/updates/tk-tv-player-windows.json")
@@ -126,7 +135,7 @@ def is_newer(remote, local=VERSION):
 
 
 def _open(url, timeout):
-    req = urllib.request.Request(url, headers={"User-Agent": f"tk-tv-player/{VERSION} ({platform_key()})",
+    req = urllib.request.Request(url, headers={"User-Agent": f"tk-tv-player/{VERSION} ({platform_key()}{_codice_conteggio()})",
                                                "Cache-Control": "no-cache"})
     if url.startswith("https:"):
         return urllib.request.urlopen(req, timeout=timeout, context=_ssl_context())
