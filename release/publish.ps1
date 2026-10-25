@@ -38,8 +38,8 @@ if (-not (Test-Path $update) -or -not (Test-Path $install)) {
 $assets = @(@{ key = 'windows-zip'; file = (Resolve-Path $update).Path },
             @{ key = 'windows-install'; file = (Resolve-Path $install).Path })
 # installazione .exe: e' il download «Windows» della vetrina (pietrodefilippis.it/scarica-programma/...)
-$setupWin = "dist	k-tv-setup-$version.exe"
-if (-not (Test-Path $setupWin)) { throw "Manca l'installazione ${setupWin}: rifai installeruild.ps1" }
+$setupWin = "dist\tk-tv-setup-$version.exe"
+if (-not (Test-Path $setupWin)) { throw "Manca l'installazione ${setupWin}: rifai installer\build.ps1" }
 $assets += @{ key = 'windows'; file = (Resolve-Path $setupWin).Path }
 
 # --- manifest
