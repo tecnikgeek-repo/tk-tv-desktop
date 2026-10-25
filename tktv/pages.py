@@ -42,6 +42,37 @@ def _card_label(text, glyph):
     return row
 
 
+def _avviso_liste():
+    """Riquadro ambra «tk-tv è solo un lettore … Siamo contro la pirateria» sotto il link della lista."""
+    from tktv.pro import AVVISO_FINE, AVVISO_TESTO, AVVISO_TITOLO
+    w = QWidget()
+    w.setObjectName("avvisoListe")
+    w.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+    w.setStyleSheet(f"#avvisoListe {{ background:rgba(245,158,11,0.10); border:1px solid rgba(245,158,11,0.40);"
+                    " border-radius:14px; }")
+    riga = QHBoxLayout(w)
+    riga.setContentsMargins(16, 14, 16, 14)
+    riga.setSpacing(14)
+    ic = QLabel(S.ICO_WARN)
+    ic.setFont(S.icon_font(20))
+    ic.setFixedSize(42, 42)
+    ic.setAlignment(Qt.AlignmentFlag.AlignCenter)
+    ic.setStyleSheet(f"color:{S.AMBER}; background:rgba(245,158,11,0.18); border-radius:12px;")
+    riga.addWidget(ic, 0, Qt.AlignmentFlag.AlignTop)
+    col = QVBoxLayout()
+    col.setSpacing(4)
+    t = QLabel(AVVISO_TITOLO)
+    t.setStyleSheet("color:#ffffff; font-size:14px; font-weight:800; background:transparent;")
+    s = QLabel(f"{AVVISO_TESTO}<br><b style='color:{S.AMBER};'>{AVVISO_FINE}</b>")
+    s.setTextFormat(Qt.TextFormat.RichText)
+    s.setWordWrap(True)
+    s.setStyleSheet("color:#cbd5e1; font-size:13px; background:transparent;")
+    col.addWidget(t)
+    col.addWidget(s)
+    riga.addLayout(col, 1)
+    return w
+
+
 def _passo(glyph, titolo, testo):
     """Un passo della card «Come funziona»: icona in un riquadro colorato, titolo e una riga di spiegazione."""
     w = QWidget()
@@ -149,11 +180,7 @@ class SettingsPage(QWidget):
         self.ok.clicked.connect(self._save)
         lay.addWidget(self.ok)
         # responsabilità della lista: sempre visibile, anche a chi ha già chiuso il benvenuto
-        from tktv.pro import AVVISO_LISTE
-        legale = QLabel(AVVISO_LISTE)
-        legale.setWordWrap(True)
-        legale.setObjectName("muted")
-        lay.addWidget(legale)
+        lay.addWidget(_avviso_liste())
         col.addWidget(card)
         col.addWidget(self._come_funziona())
 

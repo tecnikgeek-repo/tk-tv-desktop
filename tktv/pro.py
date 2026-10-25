@@ -12,9 +12,11 @@ from tktv.util import resource_path
 DONAZIONE = "https://pietrodefilippis.it/donazione/"
 
 # responsabilità di liste e contenuti (Pietro, 25/10): nel benvenuto e sotto il campo del link
-AVVISO_LISTE = ("tk-tv è solo un lettore: non contiene e non fornisce canali né liste. Sei l'unico responsabile "
-                "delle liste e dei contenuti che usi: usa solo canali che hai il diritto di vedere. "
-                "Siamo contro la pirateria.")
+AVVISO_TITOLO = "tk-tv è solo un lettore"
+AVVISO_TESTO = ("Non contiene e non fornisce canali né liste. Sei l'unico responsabile delle liste e dei contenuti "
+                "che usi: usa solo canali che hai il diritto di vedere.")
+AVVISO_FINE = "Siamo contro la pirateria."
+AVVISO_LISTE = f"{AVVISO_TITOLO}: {AVVISO_TESTO[0].lower()}{AVVISO_TESTO[1:]} {AVVISO_FINE}"
 
 
 def crea_licenza(versione):
