@@ -74,6 +74,8 @@ La lista può aprire solo indirizzi web e di streaming: niente file locali né r
 
 tk-tv non contiene e non suggerisce liste di canali: usa solo quella che indichi tu, e il link resta sul tuo computer.
 
+> ⚖️ **tk-tv è solo un lettore.** Non contiene e non fornisce canali né liste: chi lo usa è l'unico responsabile delle liste e dei contenuti che apre, e deve usare solo canali che ha il diritto di vedere. **Siamo contro la pirateria.**
+
 | Resta sul tuo computer | Va in rete (e perché) |
 |---|---|
 | Il link della tua lista | I canali e i loghi della tua lista |

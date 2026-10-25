@@ -761,7 +761,7 @@ AUTORE = "Pietro De Filippis (TecnikGeek)"
 
 TESTO_STATISTICHE = ("Aiutami a contare le installazioni: una volta al giorno il programma invia il suo nome, "
                      "la versione e il sistema operativo, con un codice casuale. Niente file, nomi, email o "
-                     "contenuti. Puoi cambiare idea nelle Impostazioni.")
+                     "contenuti. Puoi cambiare idea quando vuoi, nelle Impostazioni o in Informazioni.")
 
 
 def _link(testo, url):
@@ -826,13 +826,31 @@ class BenvenutoDialog(QDialog):
             "I tuoi file e i tuoi dati restano su questo computer. "
             f"{_link('Privacy', PRIVACY)} · {_link('Termini', TERMINI)}",
         ]
+        # i testi scorrono se lo schermo è basso (es. 1366×768 con la barra, righe in più del programma)
+        corpo = QWidget()
+        corpo.setStyleSheet("background: transparent;")
+        cl = QVBoxLayout(corpo)
+        cl.setContentsMargins(0, 0, 6, 0)
+        cl.setSpacing(12)
         for r in righe:
             t = QLabel(r)
             t.setObjectName("tkTesto")
             t.setWordWrap(True)
             t.setTextFormat(Qt.TextFormat.RichText)
             t.setOpenExternalLinks(True)
-            lay.addWidget(t)
+            cl.addWidget(t)
+        scorri = QScrollArea()
+        scorri.setWidget(corpo)
+        scorri.setWidgetResizable(True)
+        scorri.setFrameShape(QFrame.Shape.NoFrame)
+        scorri.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scorri.setStyleSheet("QScrollArea { background: transparent; } QScrollArea > QWidget > QWidget { background: transparent; }")
+        schermo = QGuiApplication.primaryScreen()
+        alto = schermo.availableGeometry().height() if schermo is not None else 800
+        scorri.setMaximumHeight(max(160, alto - 330))   # resta posto per titolo, casella e «Inizia»
+        corpo.adjustSize()
+        scorri.setMinimumHeight(min(corpo.sizeHint().height() + 4, max(160, alto - 330)))
+        lay.addWidget(scorri, 1)
 
         box = QFrame()
         box.setObjectName("tkBox")

@@ -121,6 +121,12 @@ class SettingsPage(QWidget):
         self.ok.setMinimumHeight(46)
         self.ok.clicked.connect(self._save)
         lay.addWidget(self.ok)
+        # responsabilità della lista: sempre visibile, anche a chi ha già chiuso il benvenuto
+        from tktv.pro import AVVISO_LISTE
+        legale = QLabel(AVVISO_LISTE)
+        legale.setWordWrap(True)
+        legale.setObjectName("muted")
+        lay.addWidget(legale)
         col.addWidget(card)
 
         card3, lay3 = _card()

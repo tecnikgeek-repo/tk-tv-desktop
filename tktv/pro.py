@@ -11,6 +11,11 @@ from tktv.util import resource_path
 
 DONAZIONE = "https://pietrodefilippis.it/donazione/"
 
+# responsabilità di liste e contenuti (Pietro, 25/10): nel benvenuto e sotto il campo del link
+AVVISO_LISTE = ("tk-tv è solo un lettore: non contiene e non fornisce canali né liste. Sei l'unico responsabile "
+                "delle liste e dei contenuti che usi: usa solo canali che hai il diritto di vedere. "
+                "Siamo contro la pirateria.")
+
 
 def crea_licenza(versione):
     """La licenza sta nella cartella dati dell'utente (i test usano un profilo a parte)."""
@@ -50,6 +55,7 @@ def benvenuto(parent=None):
     try:
         from tktv.tk_licenza_qt import benvenuto as mostra
         mostra(licenza(), APP_TITLE, URL_SORGENTE, parent=parent, logo=_logo(), righe_extra=(
+            f"<b>{AVVISO_LISTE}</b>",
             "Il link della tua lista resta solo su questo computer. In rete tk-tv contatta gli indirizzi "
             "della tua lista (canali e loghi), Google, DuckDuckGo e Twitch per le icone di «App e pay TV» "
             "e pietrodefilippis.it per controllare gli aggiornamenti.",))

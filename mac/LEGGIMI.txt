@@ -43,3 +43,8 @@ Il nome tk-tv e il logo non sono coperti dalla licenza: una versione modificata 
 avere un nome diverso.
 
 Creato da TecnikGeek — https://pietrodefilippis.it
+
+LISTE E CONTENUTI
+tk-tv è solo un lettore: non contiene e non fornisce canali né liste. Sei l'unico
+responsabile delle liste e dei contenuti che usi: usa solo canali che hai il diritto
+di vedere. Siamo contro la pirateria.
