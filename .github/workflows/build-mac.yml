@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6, fissata al commit
       - name: Build
         run: bash mac/build_mac.sh
       # i dmg vanno nella release della versione (gli artifact hanno una quota condivisa tra i repo, spesso piena)
