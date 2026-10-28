@@ -39,7 +39,7 @@ def load():
         return _vlc
     folder = vlc_dir()
     if folder is None:
-        raise RuntimeError("Motore video (libVLC) non trovato: reinstalla tk-tv.")
+        raise RuntimeError("Motore video non trovato: reinstalla tk-tv.")
     os.environ["PYTHON_VLC_LIB_PATH"] = os.path.join(folder, LIB_NAME)
     os.environ["PYTHON_VLC_MODULE_PATH"] = os.path.join(folder, "plugins")
     os.environ["VLC_PLUGIN_PATH"] = os.path.join(folder, "plugins")
@@ -153,7 +153,7 @@ def instance():
             "--network-caching=2000", "--adaptive-logic=highest",
         ])
         if _instance is None:
-            raise RuntimeError("Impossibile avviare il motore video (libVLC).")
+            raise RuntimeError("Impossibile avviare il motore video.")
         _instance.set_user_agent("tk-tv", DEFAULT_UA)
     return _instance
 

@@ -33,9 +33,9 @@ class MainWindow(QMainWindow):
         from tktv.util import app_data_dir
         try:
             from tktv import engine
-            vlc = "VLC " + engine.load().libvlc_get_version().decode().split(" ")[0]
+            vlc = "versione " + engine.load().libvlc_get_version().decode().split(" ")[0]
         except Exception:
-            vlc = "VLC non trovato"
+            vlc = "non trovato"
         finestra = {}
 
         def tastiera():

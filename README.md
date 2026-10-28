@@ -7,7 +7,7 @@
 
 ### La tua lista M3U, comoda come un telecomando.
 
-Canali divisi per gruppo, loghi, ricerca e preferiti, con il motore video di VLC giÃ  incluso.
+Canali divisi per gruppo, loghi, ricerca e preferiti, con il motore video già incluso.
 
 <a href="COPYING"><img alt="Licenza AGPL-3.0" src="https://img.shields.io/badge/licenza-AGPL--3.0-16a34a?style=for-the-badge"></a> <img alt="Windows" src="https://img.shields.io/badge/Windows-10%20%C2%B7%2011-0078D4?style=for-the-badge&logo=windows&logoColor=white"> <img alt="macOS" src="https://img.shields.io/badge/macOS-Intel%20%C2%B7%20Apple%20Silicon-111111?style=for-the-badge&logo=apple&logoColor=white"> <img alt="Versione" src="https://img.shields.io/github/v/tag/tecnikgeek-repo/tk-tv-desktop?label=versione&style=for-the-badge&color=e11d48"> <img alt="Gratis" src="https://img.shields.io/badge/prezzo-gratis-f59e0b?style=for-the-badge">
 
@@ -29,27 +29,27 @@ Canali divisi per gruppo, loghi, ricerca e preferiti, con il motore video di VLC
 <tr>
 <td width="50%" valign="top">
 
-### ðŸ“º&nbsp; Canali in ordine
+### 📺&nbsp; Canali in ordine
 Gruppi, loghi e numeri canale: cambi canale con le frecce o scrivendo il numero, come in TV.
 
 </td>
 <td width="50%" valign="top">
 
-### ðŸ”Ž&nbsp; Cerca e preferiti
-Trovi un canale scrivendo poche lettere e tieni a portata di mano quelli che guardi di piÃ¹.
+### 🔎&nbsp; Cerca e preferiti
+Trovi un canale scrivendo poche lettere e tieni a portata di mano quelli che guardi di più.
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-### â¯ï¸&nbsp; Motore VLC incluso
+### ⏯️&nbsp; Motore video incluso
 Riproduce i flussi http, HLS, DASH, UDP e RTSP: non devi installare nient'altro.
 
 </td>
 <td width="50%" valign="top">
 
-### ðŸŒ™&nbsp; Timer e audio
+### 🌙&nbsp; Timer e audio
 Timer di spegnimento, scelta della lingua dell'audio e ripartenza dall'ultimo canale guardato.
 
 </td>
@@ -57,14 +57,14 @@ Timer di spegnimento, scelta della lingua dell'audio e ripartenza dall'ultimo ca
 <tr>
 <td width="50%" valign="top">
 
-### ðŸ–¥ï¸&nbsp; Schermo intero
+### 🖥️&nbsp; Schermo intero
 Doppio clic sul video per guardarlo a schermo intero.
 
 </td>
 <td width="50%" valign="top">
 
-### ðŸ›¡ï¸&nbsp; Sicuro
-La lista puÃ² aprire solo indirizzi web e di streaming: niente file locali nÃ© risorse della rete di casa.
+### 🛡️&nbsp; Sicuro
+La lista può aprire solo indirizzi web e di streaming: niente file locali né risorse della rete di casa.
 
 </td>
 </tr>
@@ -74,7 +74,7 @@ La lista puÃ² aprire solo indirizzi web e di streaming: niente file locali nÃ
 
 tk-tv non contiene e non suggerisce liste di canali: usa solo quella che indichi tu, e il link resta sul tuo computer.
 
-> âš–ï¸ **tk-tv Ã¨ solo un lettore.** Non contiene e non fornisce canali nÃ© liste: chi lo usa Ã¨ l'unico responsabile delle liste e dei contenuti che apre, e deve usare solo canali che ha il diritto di vedere. **Siamo contro la pirateria.**
+> ⚖️ **tk-tv è solo un lettore.** Non contiene e non fornisce canali né liste: chi lo usa è l'unico responsabile delle liste e dei contenuti che apre, e deve usare solo canali che ha il diritto di vedere. **Siamo contro la pirateria.**
 
 | Resta sul tuo computer | Va in rete (e perché) |
 |---|---|
@@ -88,8 +88,8 @@ pubblicati dall'autore.
 
 ## 📥 Installazione
 
-- **Windows 10 / 11** â€” scarica lo ZIP o l'installer, estrai e avvia. Non servono i permessi di amministratore.
-- **macOS** (Intel o Apple Silicon) â€” apri il `.dmg` e trascina l'app in *Applicazioni*. Al primo avvio: clic destro sull'app â†’ *Apri*.
+- **Windows 10 / 11** — scarica lo ZIP o l'installer, estrai e avvia. Non servono i permessi di amministratore.
+- **macOS** (Intel o Apple Silicon) — apri il `.dmg` e trascina l'app in *Applicazioni*. Al primo avvio: clic destro sull'app → *Apri*.
 
 Gli aggiornamenti arrivano da soli: quando esce una versione nuova il programma te lo propone.
 

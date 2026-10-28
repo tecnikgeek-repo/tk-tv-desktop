@@ -465,7 +465,7 @@ class InfoPage(QWidget):
         rows = [
             ("Versione", VERSION),
             ("Licenza", "AGPL-3.0"),
-            ("Motore video", f"VLC {vlc_ver}"),
+            ("Motore video", f"versione {vlc_ver}"),
             ("Python", platform.python_version()),
             ("macOS", f"{platform.mac_ver()[0]} ({platform.machine()})") if sys.platform == "darwin"
             else ("Windows", f"{platform.release()} ({platform.version()})"),
