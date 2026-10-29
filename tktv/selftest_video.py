@@ -173,10 +173,15 @@ def run(argv):
             else:
                 stato["fase"] = "fatto"
         elif stato["fase"] == "schermo intero" and time.time() - stato["t_fs"] > 2.5:
+            # lo schermo è quello dove sta il video (con più monitor non sempre win.screen() è già aggiornato)
+            from PySide6.QtCore import QPoint, QRect
             o = page.overlay
-            scr = win.screen().geometry()
-            stato["fs"] = (win.isFullScreen(), o is not None and o.isVisible() and o.geometry() == scr,
-                           f"{scr.width()}x{scr.height()}", o.geometry().getRect() if o is not None else None)
+            video = QRect(page.video.mapToGlobal(QPoint(0, 0)), page.video.size())
+            schermo = QGuiApplication.screenAt(video.center()) or win.screen()
+            scr = schermo.geometry()
+            stato["fs"] = (win.isFullScreen() and video == scr,
+                           o is not None and o.isVisible() and o.geometry() == video,
+                           f"{scr.getRect()}", o.geometry().getRect() if o is not None else None)
             stato["immagine_fs"] = _immagine_video(page, os.path.splitext(out)[0] + "-schermo-intero.png")
             win.toggle_fullscreen()
             stato["fase"] = "fatto"
