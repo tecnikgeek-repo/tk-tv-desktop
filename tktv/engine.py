@@ -1,4 +1,5 @@
-"""Motore video: libVLC incluso nell'app (cartella «vlc»), firmato da VideoLAN.
+"""Motore video: libVLC incluso nell'app (cartella «vlc»): su Windows e Mac quella firmata da VideoLAN,
+su Linux quella dei pacchetti Ubuntu con le sue librerie (linux/includi_vlc.py).
 
 Gestisce HLS, DASH, MPEG-TS e lo user-agent per canale (#EXTVLCOPT della playlist).
 """
@@ -13,17 +14,22 @@ from tktv.util import app_root
 if sys.platform == "darwin":
     DEFAULT_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) tk-tv"
     LIB_NAME = os.path.join("lib", "libvlc.dylib")
+elif sys.platform.startswith("linux"):
+    DEFAULT_UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) tk-tv"
+    # vlc/lib: libvlc, libvlccore e le librerie che non ci sono su ogni Ubuntu (RUNPATH $ORIGIN); vlc/plugins
+    LIB_NAME = os.path.join("lib", "libvlc.so.5")
 else:
     DEFAULT_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) tk-tv"
     LIB_NAME = "libvlc.dll"
 
 _vlc = None
 _instance = None
+EXTRA_ARGS = []  # opzioni in più per l'istanza (solo il selftest: uscite audio/video «finte» senza schermo)
 
 
 def vlc_dir():
     """Cartella di libVLC: «vlc» nella versione installata, «vendor/vlc-x.y.z» in sviluppo.
-    Su Mac le librerie stanno in vlc/lib e i plugin in vlc/plugins (come dentro VLC.app)."""
+    Su Mac e Linux le librerie stanno in vlc/lib e i plugin in vlc/plugins."""
     root = app_root()
     candidates = [os.path.join(root, "vlc")] + sorted(glob.glob(os.path.join(root, "vendor", "vlc-*")), reverse=True)
     for c in candidates:
@@ -46,6 +52,9 @@ def load():
     if sys.platform == "darwin":
         # libvlc.dylib cerca @rpath/libvlccore.dylib: caricata prima, dyld la riconosce per nome
         ctypes.CDLL(os.path.join(folder, "lib", "libvlccore.dylib"), mode=ctypes.RTLD_GLOBAL)
+    elif sys.platform.startswith("linux"):
+        # la libvlccore inclusa, mai quella di un VLC installato nel sistema
+        ctypes.CDLL(os.path.join(folder, "lib", "libvlccore.so.9"), mode=ctypes.RTLD_GLOBAL)
     else:
         try:
             os.add_dll_directory(folder)
@@ -87,8 +96,8 @@ def warm_up_async():
     secondo l'uno), su Windows l'antivirus / Smart App Control (~0,1 s l'uno, ~100 plugin = 10 s) dopo ogni
     riavvio. All'avvio dei processi separati caricano i plugin in anticipo, mentre si sceglie il canale;
     quando sono già controllati finiscono in un attimo."""
-    if vlc_dir() is None:
-        return
+    if vlc_dir() is None or sys.platform.startswith("linux"):
+        return  # Linux non controlla i plugin al primo caricamento: niente da preparare
     import subprocess
     cmd = [sys.executable, "--warm-vlc"] if getattr(sys, "frozen", False) else \
         [sys.executable, os.path.join(app_root(), "run.py"), "--warm-vlc"]
@@ -114,6 +123,8 @@ def warm_cli():
     folder = vlc_dir()
     if folder is None:
         return 1
+    if sys.platform.startswith("linux"):
+        return 0
     if sys.platform == "win32":
         # «i/n»: questo processo prende un file ogni n a partire dall'i-esimo
         part = next((a for a in sys.argv if "/" in a and a.replace("/", "").isdigit()), "0/1")
@@ -151,7 +162,7 @@ def instance():
             "--no-video-title-show", "--no-osd", "--no-snapshot-preview", "--no-stats",
             "--quiet", "--no-lua", "--ignore-config", "--no-media-library",
             "--network-caching=2000", "--adaptive-logic=highest",
-        ])
+        ] + list(EXTRA_ARGS))
         if _instance is None:
             raise RuntimeError("Impossibile avviare il motore video.")
         _instance.set_user_agent("tk-tv", DEFAULT_UA)

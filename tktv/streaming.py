@@ -1,4 +1,4 @@
-"""Pay TV e piattaforme on demand: su Windows si aprono i siti ufficiali nel browser.
+"""Pay TV e piattaforme on demand: sul computer si aprono i siti ufficiali nel browser.
 
 Come su Android, riprodurre questi contenuti dentro tk-tv è impossibile (DRM Widevine,
 nessuna API pubblica): si può solo aprire il servizio ufficiale.

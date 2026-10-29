@@ -7,3 +7,4 @@ vendor/
 build/
 assets/tk-tv.icns
 build-licenze/
+.venv-linux/

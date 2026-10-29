@@ -3,7 +3,8 @@
 Stesso schema di tk-pdf. Windows: il pacchetto è uno ZIP che uno script con soli strumenti di sistema
 (cmd, tar, reg) sostituisce alla cartella installata, così Smart App Control non deve valutare
 nessun eseguibile nuovo. Mac: un .dmg da cui uno script bash copia «TK TV.app» al posto di quella
-installata. In caso di errore resta la versione precedente.
+installata. Linux: il nuovo file AppImage sostituisce quello in uso (libreria comune tk_linux).
+In caso di errore resta la versione precedente.
 """
 import hashlib
 import json
@@ -16,7 +17,7 @@ import tempfile
 import time
 import urllib.request
 
-from tktv import VERSION
+from tktv import VERSION, tk_linux
 from tktv.tk_aggiornamento import asset_valido
 from tktv.playlist import _ssl_context
 from tktv.util import app_data_dir, app_root
@@ -31,7 +32,10 @@ def _codice_conteggio():
 
 
 IS_MAC = sys.platform == "darwin"
+IS_LINUX = sys.platform.startswith("linux")
+# un manifest per sistema (ognuno firmato col suo nome): Windows, Mac e Linux escono anche in momenti diversi
 MANIFEST_URL = ("https://pietrodefilippis.it/updates/tk-tv-player-mac.json" if IS_MAC
+                else "https://pietrodefilippis.it/updates/tk-tv-player-linux.json" if IS_LINUX
                 else "https://pietrodefilippis.it/updates/tk-tv-player-windows.json")
 CHECK_INTERVAL = 12 * 3600
 # nome del manifest (tk-pdf, tk-tv-player-mac…): entra nel testo firmato
@@ -157,19 +161,23 @@ def platform_key():
     if IS_MAC:
         # sotto Rosetta platform.machine() dice x86_64: arriva la stessa build che sta girando
         return "mac-arm64" if platform.machine() == "arm64" else "mac-x86_64"
+    if IS_LINUX:
+        return tk_linux.chiave_piattaforma()  # linux-x86_64
     return "windows"
 
 
 def asset_for(manifest):
-    key = platform_key() if IS_MAC else "windows-zip"
+    key = platform_key() if IS_MAC or IS_LINUX else "windows-zip"
     asset = manifest.get(key)
     return asset if isinstance(asset, dict) and asset.get("url") and asset_valido(SLUG, manifest, key, asset) else None
 
 
 def install_kind():
-    """'windows' o 'mac' se l'app è installata e quindi aggiornabile; None in sviluppo."""
+    """'windows', 'mac' o 'linux' se l'app è installata e quindi aggiornabile; None in sviluppo."""
     if IS_MAC:
         return "mac" if getattr(sys, "frozen", False) and mac_bundle_path() else None
+    if IS_LINUX:
+        return "linux" if tk_linux.appimage_path() else None
     bundled = os.path.join(app_root(), "python")
     if any(os.path.exists(os.path.join(bundled, n)) for n in ("tk-tv.exe", "pythonw.exe")) and \
             os.path.normcase(os.path.abspath(sys.base_prefix)) == os.path.normcase(bundled):
@@ -230,6 +238,10 @@ def apply_update(path, relaunch=True, new_version=""):
                           new_version], start_new_session=True, stdin=subprocess.DEVNULL,
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         return
+    if IS_LINUX:
+        tk_linux.applica_aggiornamento(path, download_dir(), os.path.join(app_data_dir(), "aggiornamento.log"),
+                                       relaunch)
+        return
     # console nascosta (non DETACHED: senza console i comandi di sistema possono bloccarsi)
     flags = 0x00000200 | 0x08000000  # CREATE_NEW_PROCESS_GROUP | CREATE_NO_WINDOW
     script = os.path.join(download_dir(), "applica-aggiornamento.cmd")
@@ -257,7 +269,7 @@ def cli_update_test(argv):
             return 0
         asset = asset_for(manifest)
         if not asset:
-            write(f"nessun file per {platform_key()}")
+            write(f"nessun file valido per {platform_key()} (manca o non è firmato): aggiornamento rifiutato")
             return 2
         dest = os.path.join(download_dir(), os.path.basename(asset["url"].split("?")[0]))
         download(asset["url"], dest, asset.get("sha256"))

@@ -1,7 +1,8 @@
-"""Crea la cartella «licenze» del pacchetto di tk-tv (Windows e Mac): solo libreria standard.
+"""Crea la cartella «licenze» del pacchetto di tk-tv (Windows, Mac e Linux): solo libreria standard.
 
 Uso: python -I installer/licenze.py <cartella_destinazione> --site <site-packages> [--vlc <cartella_vlc>]
-                                   [--python-licenza <LICENSE.txt>] [--mac]
+                                   [--python-licenza <LICENSE.txt>] [--mac | --linux --vlc-versione <x.y.z>]
+Su Linux linux/includi_vlc.py ha già messo nella cartella i copyright dei pacchetti Ubuntu e LINUX-PACCHETTI.txt.
 
 Copia la licenza AGPL di tk-tv (COPYING), i testi in licenze/ del repo, le licenze dai *.dist-info dei
 pacchetti inclusi e il COPYING di VLC, poi scrive COMPONENTI.txt (componente, versione, licenza, sorgente).
@@ -58,7 +59,10 @@ def main(argv):
     ap.add_argument("--vlc", default="")
     ap.add_argument("--python-licenza", default="")
     ap.add_argument("--mac", action="store_true")
+    ap.add_argument("--linux", action="store_true")
+    ap.add_argument("--vlc-versione", default="")
     a = ap.parse_args(argv)
+    vlc_ver = a.vlc_versione or VLC_VER
 
     os.makedirs(a.dest, exist_ok=True)
     shutil.copyfile(os.path.join(ROOT, "COPYING"), os.path.join(a.dest, "COPYING-AGPL-3.0.txt"))
@@ -79,18 +83,21 @@ def main(argv):
     shiboken, d_shiboken = dist_info(a.site, "shiboken6")
     pyvlc, d_pyvlc = dist_info(a.site, "python_vlc")
     certifi, d_certifi = dist_info(a.site, "certifi")
+    jeepney, d_jeepney = dist_info(a.site, "jeepney")
     extra = []
     extra += copia_licenze_dist(d_pyvlc, "python-vlc", a.dest)
     extra += copia_licenze_dist(d_certifi, "certifi", a.dest)
     extra += copia_licenze_dist(d_pyside, "PySide6", a.dest)
     extra += copia_licenze_dist(d_shiboken, "shiboken6", a.dest)
+    if a.linux:
+        extra += copia_licenze_dist(d_jeepney, "jeepney", a.dest)
 
     righe = [
         f"tk-tv {ver} — componenti inclusi in questo pacchetto",
         "=" * 60,
         "",
         "Ogni componente resta sotto la sua licenza; i testi sono in questa cartella.",
-        "Le librerie (DLL/dylib di Qt e di VLC) sono file separati: si possono sostituire con",
+        "Le librerie (DLL/dylib/so di Qt e di VLC) sono file separati: si possono sostituire con",
         "una versione modificata dagli stessi sorgenti, come chiedono LGPL-2.1 e LGPL-3.0.",
         "",
         f"tk-tv {ver}",
@@ -112,10 +119,10 @@ def main(argv):
         "            https://code.qt.io/cgit/pyside/pyside-setup.git",
         "            https://download.qt.io/official_releases/qt/",
         "",
-        f"VLC / libVLC {VLC_VER} (VideoLAN)",
+        f"VLC / libVLC {vlc_ver} (VideoLAN)" + (" dai pacchetti Ubuntu" if a.linux else ""),
         "  Licenza: LGPL-2.1-or-later per libvlc e libvlccore e la maggior parte dei plugin,",
         "           GPL-2.0-or-later per alcuni plugin (VLC-COPYING.txt, LGPL-2.1.txt, GPL-2.0.txt)",
-        f"  Sorgente: https://download.videolan.org/pub/videolan/vlc/{VLC_VER}/",
+        f"  Sorgente: https://download.videolan.org/pub/videolan/vlc/{vlc_ver}/",
         "  Incluso solo un sottoinsieme dei plugin (quelli per guardare i flussi di rete).",
         "",
         f"python-vlc {pyvlc or '?'}",
@@ -126,7 +133,17 @@ def main(argv):
         "  Licenza: MPL-2.0 (MPL-2.0.txt)",
         "  Sorgente: https://pypi.org/project/certifi/ · https://github.com/certifi/python-certifi",
     ]
-    if a.mac:
+    if a.linux:
+        righe += [
+            "  Su Linux libVLC, i plugin e le librerie che non ci sono su ogni Ubuntu (FFmpeg, codec…)",
+            "  arrivano dai pacchetti Ubuntu così come sono: elenco, versioni e pacchetti sorgente in",
+            "  LINUX-PACCHETTI.txt, licenza originale di ognuno in deb-<pacchetto>-copyright.txt.",
+            "",
+            f"jeepney {jeepney or '?'} (D-Bus: schermo acceso durante la visione)",
+            "  Licenza: MIT (MIT.txt)",
+            "  Sorgente: https://pypi.org/project/jeepney/ · https://gitlab.com/takluyver/jeepney",
+        ]
+    if a.mac or a.linux:
         righe += [
             "",
             "Material Icons Round (font delle icone)",
@@ -137,7 +154,15 @@ def main(argv):
             "  Licenza: GPL-2.0-or-later con eccezione per il bootloader (GPL-2.0.txt)",
             "  Sorgente: https://github.com/pyinstaller/pyinstaller",
         ]
-    else:
+    if a.linux:
+        righe += [
+            "",
+            "AppImage runtime (avvio del file .AppImage)",
+            "  Licenza: MIT (MIT.txt); contiene libfuse (LGPL-2.1, LGPL-2.1.txt), squashfuse (BSD-2-Clause),",
+            "  zstd e zlib (BSD/zlib)",
+            "  Sorgente: https://github.com/AppImage/type2-runtime",
+        ]
+    elif not a.mac:
         righe += [
             "",
             "Microsoft Visual C++ Runtime (vcruntime140.dll, msvcp140.dll…)",

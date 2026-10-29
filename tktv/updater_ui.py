@@ -114,7 +114,7 @@ class UpdateDialog(QDialog):
         self.update_btn.clicked.connect(self._start)
         if self.asset is None:
             self.update_btn.setEnabled(False)
-            self.status.setText(f"Questa versione non è ancora disponibile per {'Mac' if sys.platform == 'darwin' else 'Windows'}.")
+            self.status.setText(f"Questa versione non è ancora disponibile per {'Mac' if sys.platform == 'darwin' else 'Linux' if sys.platform.startswith('linux') else 'Windows'}.")
 
     def _skip(self):
         self.window.store.settings.setValue("update/skip_version", self.manifest["version"])

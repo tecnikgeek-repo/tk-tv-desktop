@@ -1,0 +1,41 @@
+tk-tv per Linux — installazione
+===============================
+
+Funziona su Ubuntu 22.04 o più recente (e sulle distribuzioni simili), computer a 64 bit (x86_64).
+Il motore video è già dentro il programma: non serve installare VLC né altro.
+
+1. Scarica il file «tk-tv-player-linux-<versione>-x86_64.AppImage» e mettilo dove vuoi tenerlo,
+   per esempio nella cartella «Applicazioni» della tua home.
+2. Rendilo avviabile: tasto destro sul file → Proprietà → attiva «Esegui come programma»
+   (oppure da Terminale: chmod +x tk-tv-player-linux-*.AppImage).
+3. Aprilo con un doppio clic. Al primo avvio tk-tv si aggiunge da solo al menu delle applicazioni,
+   con la sua icona: dalla volta dopo lo trovi lì.
+
+Se non si apre e il Terminale dice che manca FUSE: sudo apt install fuse3 (su Ubuntu c'è già).
+Su Wayland (Ubuntu, Fedora…) tk-tv usa XWayland, che il desktop avvia da solo: il video e i comandi
+sopra il video hanno bisogno di finestre X11.
+
+tk-tv è solo un lettore
+Non contiene e non fornisce canali né liste. Sei l'unico responsabile delle liste e dei contenuti che
+usi: usa solo canali che hai il diritto di vedere. Siamo contro la pirateria.
+
+Software libero
+tk-tv è gratuito, con tutte le funzioni, ed è software libero: licenza GNU AGPL-3.0, senza alcuna
+garanzia. Codice sorgente: https://github.com/tecnikgeek-repo/tk-tv-desktop
+Le licenze di tk-tv e dei componenti inclusi (Python, Qt, VLC e le librerie prese dai pacchetti
+Ubuntu) sono nel programma: Informazioni → «Licenze e codice sorgente».
+Il nome tk-tv e il logo non sono coperti dalla licenza: una versione modificata deve avere un nome diverso.
+
+I tuoi dati (restano sul computer)
+- Link della lista, preferiti e impostazioni: ~/.local/share/tk-tv-player
+- Aggiornamenti: tk-tv sostituisce da solo il file AppImage con la versione nuova (firmata).
+- Per togliere tutto: cancella il file AppImage (la voce del menu sparisce) e la cartella
+  ~/.local/share/tk-tv-player.
+
+Cosa va in rete
+- Gli indirizzi della tua lista (canali e loghi).
+- Google, DuckDuckGo e Twitch per le icone di «App e pay TV».
+- pietrodefilippis.it per controllare se c'è una versione nuova (aggiornamenti firmati).
+- Statistiche anonime SOLO se lo consenti (benvenuto o Informazioni).
+
+Creato da TecnikGeek — https://pietrodefilippis.it

@@ -48,7 +48,8 @@ def _logo():
 
 
 def cartella_licenze():
-    """Cartella «licenze» del pacchetto (accanto a run.py su Windows, nelle risorse dell'app su Mac)."""
+    """Cartella «licenze» del pacchetto (accanto a run.py su Windows, nelle risorse dell'app su Mac,
+    in _internal dentro l'AppImage su Linux)."""
     return resource_path("licenze")
 
 

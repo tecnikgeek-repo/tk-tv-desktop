@@ -8,7 +8,7 @@ from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 from tktv import APP_NAME, APP_TITLE, VERSION
-from tktv.util import app_data_dir
+from tktv.util import IS_LINUX, LINUX_DESKTOP_ID, app_data_dir
 
 
 def _install_excepthook():
@@ -42,6 +42,20 @@ def _refresh_install():
     threading.Thread(target=work, daemon=True).start()
 
 
+def _linux_menu():
+    """Linux: voce nel menu delle applicazioni con l'icona (solo dall'AppImage; si corregge se il file si sposta)."""
+    import threading
+
+    def work():
+        try:
+            from tktv.util import install_linux_menu
+            install_linux_menu()
+        except Exception:
+            pass  # non deve mai impedire l'uso dell'app
+
+    threading.Thread(target=work, daemon=True).start()
+
+
 def main():
     if "--warm-vlc" in sys.argv:
         from tktv.engine import warm_cli
@@ -55,6 +69,9 @@ def main():
     if "--update-test" in sys.argv:
         from tktv.updater import cli_update_test
         sys.exit(cli_update_test(sys.argv))
+    if "--selftest-video" in sys.argv:
+        from tktv.selftest_video import run as selftest_video
+        sys.exit(selftest_video(sys.argv))
 
     _install_excepthook()
     app, win = build(sys.argv)
@@ -87,6 +104,8 @@ def main():
     engine.warm_up_async()
     if sys.platform == "win32":
         QTimer.singleShot(2000, _refresh_install)
+    if IS_LINUX:
+        QTimer.singleShot(1500, _linux_menu)
     from tktv import pro
 
     def dopo_il_benvenuto():
@@ -113,11 +132,25 @@ def build(argv):
         except Exception:
             pass
 
+    if IS_LINUX:
+        from tktv.util import prepare_linux_display
+        prepare_linux_display()  # XWayland: il video di VLC e i comandi sopra hanno bisogno di finestre X11
+
     app = QApplication(argv)
+    if IS_LINUX:
+        from PySide6.QtGui import QDesktopServices
+        from tktv.util import make_url_opener
+        app.setDesktopFileName(LINUX_DESKTOP_ID)  # la barra delle applicazioni trova icona e nome dal .desktop
+        # i link (contatti, caffè, app e pay TV) si aprono con l'ambiente del sistema, non con quello del pacchetto
+        app.url_opener = make_url_opener(app)
+        for scheme in ("http", "https"):
+            QDesktopServices.setUrlHandler(scheme, app.url_opener, "open")
     # licenza prima della finestra: consenso alle statistiche, benvenuto e invito al caffè la leggono
     from tktv import pro
     app.licenza = pro.crea_licenza(VERSION)
-    app.setApplicationName(APP_NAME)
+    # Linux: il nome diventa la classe WM_CLASS della finestra X11, che deve essere quella del file .desktop (tk-tv)
+    # per avere l'icona giusta nella barra; le impostazioni su Linux hanno un percorso loro (store.py)
+    app.setApplicationName(LINUX_DESKTOP_ID if IS_LINUX else APP_NAME)
     app.setOrganizationName("TecnikGeek")
     app.setApplicationDisplayName(APP_TITLE)
     app.setStyle("Fusion")

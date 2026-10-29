@@ -16,6 +16,20 @@ from tktv.icon import badge_pixmap
 from tktv.util import resource_path
 
 COMPUTER = "Mac" if sys.platform == "darwin" else "PC"
+SISTEMA = "Mac" if sys.platform == "darwin" else "Linux" if sys.platform.startswith("linux") else "Windows"
+
+
+def _sistema_operativo():
+    """(nome, versione) del sistema per la scheda Informazioni."""
+    if sys.platform == "darwin":
+        return "macOS", f"{platform.mac_ver()[0]} ({platform.machine()})"
+    if sys.platform.startswith("linux"):
+        try:
+            nome = platform.freedesktop_os_release().get("PRETTY_NAME", "")
+        except OSError:
+            nome = ""
+        return "Linux", f"{nome or platform.release()} ({platform.machine()})"
+    return "Windows", f"{platform.release()} ({platform.version()})"
 
 
 def _card(parent=None):
@@ -341,7 +355,7 @@ class InfoPage(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        page, self.header, self.back_btn, body = _page_with_header("Informazioni", f"{APP_TITLE} per {'Mac' if sys.platform == 'darwin' else 'Windows'}", self.back)
+        page, self.header, self.back_btn, body = _page_with_header("Informazioni", f"{APP_TITLE} per {SISTEMA}", self.back)
         QVBoxLayout(self).setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(page)
 
@@ -467,8 +481,7 @@ class InfoPage(QWidget):
             ("Licenza", "AGPL-3.0"),
             ("Motore video", f"versione {vlc_ver}"),
             ("Python", platform.python_version()),
-            ("macOS", f"{platform.mac_ver()[0]} ({platform.machine()})") if sys.platform == "darwin"
-            else ("Windows", f"{platform.release()} ({platform.version()})"),
+            _sistema_operativo(),
         ]
         for i, (k, v) in enumerate(rows):
             a = QLabel(k)

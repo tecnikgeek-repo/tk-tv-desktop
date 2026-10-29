@@ -15,8 +15,8 @@ GRAY300 = "#cbd5e1"
 GRAY500 = "#64748b"
 WHITE = "#ffffff"
 
-if sys.platform == "darwin":
-    # Mac: Material Icons Round (Apache 2.0) incluso in assets/fonts
+if sys.platform == "darwin" or sys.platform.startswith("linux"):
+    # Mac e Linux: Material Icons Round (Apache 2.0) incluso in assets/fonts
     ICON_FAMILY = "Material Icons Round"
     ICO_SEARCH = "\ue8b6"
     ICO_REFRESH = "\ue5d5"
@@ -56,7 +56,7 @@ if sys.platform == "darwin":
     ICO_LOCK = "\ue897"
     ICO_WARN = "\ue002"
     ICON_SCALE = 1.2
-    UI_FAMILY = ".AppleSystemUIFont"
+    UI_FAMILY = ".AppleSystemUIFont" if sys.platform == "darwin" else ""  # Linux: il font del desktop
 else:
     # Icone di sistema di Windows (Segoe Fluent Icons su Windows 11, MDL2 su Windows 10)
     ICON_FAMILY = None
@@ -113,12 +113,14 @@ def icon_font(px=16):
 
 
 def ui_font():
-    """Font dell'interfaccia: Segoe UI su Windows, San Francisco su Mac."""
+    """Font dell'interfaccia: Segoe UI su Windows, San Francisco su Mac, quello del desktop su Linux."""
+    if not UI_FAMILY:
+        return QFontDatabase.systemFont(QFontDatabase.SystemFont.GeneralFont)
     return QFont(UI_FAMILY)
 
 
 def load_fonts():
-    """Registra i font inclusi nell'app (le icone su Mac). Da chiamare dopo aver creato QApplication."""
+    """Registra i font inclusi nell'app (le icone su Mac e Linux). Da chiamare dopo aver creato QApplication."""
     import glob
     import os
     from tktv.util import resource_path

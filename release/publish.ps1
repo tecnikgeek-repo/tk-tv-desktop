@@ -1,6 +1,7 @@
 # Pubblica una versione di tk-tv per Windows: chi ce l'ha installata la riceve con l'aggiornamento automatico.
 # Uso:  powershell -ExecutionPolicy Bypass -File release\publish.ps1 -Notes "Novita 1|Novita 2"
 # Prerequisiti: VERSION alzata in tktv\__init__.py e commit fatto.
+# Mac e Linux hanno manifest e script loro: release/publish_mac.sh e release\publish_linux.ps1.
 param([Parameter(Mandatory = $true)][string]$Notes)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent

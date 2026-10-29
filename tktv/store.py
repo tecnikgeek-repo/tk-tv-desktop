@@ -1,12 +1,18 @@
-"""Preferenze salvate (registro utente di Windows, via QSettings)."""
+"""Preferenze salvate via QSettings: registro utente su Windows, Preferenze su Mac, file nella cartella dati su Linux."""
+import os
+
 from PySide6.QtCore import QSettings
 
-from tktv.util import profile_name
+from tktv.util import IS_LINUX, app_data_dir, profile_name
 
 
 class Store:
     def __init__(self):
-        self.settings = QSettings("TecnikGeek", profile_name())
+        if IS_LINUX:
+            # Linux: tutto in ~/.local/share/<profilo> (come licenza e cache), non in ~/.config
+            self.settings = QSettings(os.path.join(app_data_dir(), "impostazioni.ini"), QSettings.Format.IniFormat)
+        else:
+            self.settings = QSettings("TecnikGeek", profile_name())
 
     # --- playlist
     @property
