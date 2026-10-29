@@ -59,28 +59,3 @@ def install_linux_menu():
         LINUX_DESKTOP_ID, APP_TITLE, "Lettore della TV in diretta dalla tua lista M3U (TecnikGeek)",
         "AudioVideo;Video;Player;TV;", icona,
         nome_generico="Lettore TV", parole="tv;m3u;iptv;canali;diretta;lista;")
-
-
-def prepare_linux_display():
-    """Linux, prima di creare QApplication. Il video di VLC si aggancia a una finestra X11 (set_xwindow) e i comandi
-    stanno in una finestra trasparente posizionata sopra il video: su Wayland puro una finestra non può scegliere
-    dove stare. Su GNOME/KDE con Wayland c'è sempre XWayland (DISPLAY impostato): tk-tv usa quello, a meno che
-    l'utente non abbia già deciso con QT_QPA_PLATFORM."""
-    if not IS_LINUX or os.environ.get("QT_QPA_PLATFORM"):
-        return
-    if os.environ.get("DISPLAY"):
-        os.environ["QT_QPA_PLATFORM"] = "xcb"
-
-
-def make_url_opener(parent):
-    """Linux: oggetto per QDesktopServices.setUrlHandler che apre i link nel browser con l'ambiente del sistema
-    (tk_linux.apri): l'xdg-open avviato da Qt erediterebbe le librerie del pacchetto."""
-    from PySide6.QtCore import QObject, QUrl, Slot
-
-    class UrlOpener(QObject):
-        @Slot(QUrl)
-        def open(self, url):
-            from tktv import tk_linux
-            tk_linux.apri(url.toString())
-
-    return UrlOpener(parent)

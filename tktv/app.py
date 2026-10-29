@@ -133,18 +133,15 @@ def build(argv):
             pass
 
     if IS_LINUX:
-        from tktv.util import prepare_linux_display
-        prepare_linux_display()  # XWayland: il video di VLC e i comandi sopra hanno bisogno di finestre X11
+        from tktv import tk_linux
+        tk_linux.scegli_xwayland()  # XWayland: il video di VLC e i comandi sopra hanno bisogno di finestre X11
 
     app = QApplication(argv)
     if IS_LINUX:
-        from PySide6.QtGui import QDesktopServices
-        from tktv.util import make_url_opener
+        from tktv.tk_linux_qt import instrada_link
         app.setDesktopFileName(LINUX_DESKTOP_ID)  # la barra delle applicazioni trova icona e nome dal .desktop
         # i link (contatti, caffè, app e pay TV) si aprono con l'ambiente del sistema, non con quello del pacchetto
-        app.url_opener = make_url_opener(app)
-        for scheme in ("http", "https"):
-            QDesktopServices.setUrlHandler(scheme, app.url_opener, "open")
+        instrada_link(app)
     # licenza prima della finestra: consenso alle statistiche, benvenuto e invito al caffè la leggono
     from tktv import pro
     app.licenza = pro.crea_licenza(VERSION)

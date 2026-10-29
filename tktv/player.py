@@ -26,49 +26,19 @@ ES_CONTINUOUS, ES_SYSTEM_REQUIRED, ES_DISPLAY_REQUIRED = 0x80000000, 0x00000001,
 
 
 _caffeinate = None
-_inibizione = None  # Linux: (connessione D-Bus, indirizzo, metodo per togliere, cookie)
-INIBITORI_LINUX = (
-    # GNOME: 4 = niente sospensione, 8 = la sessione non diventa inattiva (niente salvaschermo né schermo spento)
-    ("org.gnome.SessionManager", "/org/gnome/SessionManager", "org.gnome.SessionManager",
-     "Inhibit", "susu", ("tk-tv", 0, "Riproduzione di un canale", 4 | 8), "Uninhibit"),
-    # KDE, XFCE e gli altri desktop
-    ("org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver", "org.freedesktop.ScreenSaver",
-     "Inhibit", "ss", ("tk-tv", "Riproduzione di un canale"), "UnInhibit"),
-)
+_inibizione = None  # Linux: stato di tk_linux.inibisci (connessione D-Bus legata all'inibizione)
 
 
 def _linux_keep_awake(on):
-    """Linux: inibizione via D-Bus (jeepney), legata alla connessione: se tk-tv si chiude di colpo il desktop la
-    toglie da solo. Si rilascia alla pausa, all'uscita dal canale e alla chiusura."""
+    """Linux: niente salvaschermo né sospensione via D-Bus (libreria comune). Se tk-tv si chiude di colpo il
+    desktop la toglie da solo. Si rilascia alla pausa, all'uscita dal canale e alla chiusura."""
     global _inibizione
-    try:
-        from jeepney import DBusAddress, new_method_call
-        from jeepney.io.blocking import open_dbus_connection
-        from jeepney.wrappers import unwrap_msg
-    except ImportError:
-        return
+    from tktv import tk_linux
     if on and _inibizione is None:
-        try:
-            conn = open_dbus_connection(bus="SESSION")
-        except Exception:
-            return  # niente bus di sessione (per esempio nei test senza desktop)
-        for dest, path, iface, metodo, firma, args, togli in INIBITORI_LINUX:
-            try:
-                addr = DBusAddress(path, bus_name=dest, interface=iface)
-                cookie = unwrap_msg(conn.send_and_get_reply(new_method_call(addr, metodo, firma, args), timeout=3))[0]
-                _inibizione = (conn, addr, togli, cookie)
-                return
-            except Exception:
-                continue
-        conn.close()
+        _inibizione = tk_linux.inibisci("tk-tv", "Riproduzione di un canale")
     elif not on and _inibizione is not None:
-        conn, addr, togli, cookie = _inibizione
+        tk_linux.togli_inibizione(_inibizione)
         _inibizione = None
-        try:
-            conn.send_and_get_reply(new_method_call(addr, togli, "u", (cookie,)), timeout=3)
-        except Exception:
-            pass
-        conn.close()
 
 
 def screen_kept_on():
@@ -378,7 +348,7 @@ class PlayerPage(QWidget):
         if sys.platform == "darwin":
             self.mp.set_nsobject(int(self.video.winId()))  # winId su Mac = NSView
         elif sys.platform.startswith("linux"):
-            # finestra X11 (tk-tv gira con XWayland, vedi util.prepare_linux_display); senza X11 (test senza
+            # finestra X11 (tk-tv gira con XWayland, vedi tk_linux.scegli_xwayland); senza X11 (test senza
             # schermo) il video va dove dice l'istanza (--vout=dummy nel selftest)
             from PySide6.QtGui import QGuiApplication
             if QGuiApplication.platformName() == "xcb":

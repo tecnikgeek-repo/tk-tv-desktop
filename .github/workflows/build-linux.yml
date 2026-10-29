@@ -5,6 +5,8 @@ name: Build Linux
 # così gira da Ubuntu 22.04 in su.
 on:
   workflow_dispatch:
+  push:  # PROVVISORIO: prova della libreria comune dal ramo linux, da togliere
+    branches: ['linux']
 
 permissions:
   contents: write
