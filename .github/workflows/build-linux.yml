@@ -49,6 +49,14 @@ jobs:
             sleep 8
           done
           gh release view "$TAG" --json assets --jq '.assets[].name'
+      # prove da un ramo: l'AppImage resta un giorno tra gli artifact, per provarlo su un PC vero
+      - uses: actions/upload-artifact@v4
+        if: success() && github.ref != 'refs/heads/main'
+        continue-on-error: true
+        with:
+          name: appimage-prova
+          path: dist/*.AppImage
+          retention-days: 1
       - uses: actions/upload-artifact@v4
         if: always()
         continue-on-error: true
