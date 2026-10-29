@@ -11,7 +11,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 JOBS="${JOBS:-$(( $(nproc) / 2 > 0 ? $(nproc) / 2 : 1 ))}"
 if [ -z "${TK_BUILD_LIMITATA:-}" ] && command -v taskset >/dev/null; then
-    export TK_BUILD_LIMITATA=1
+    export TK_BUILD_LIMITATA=1 JOBS
     exec nice -n 10 taskset -c "0-$(( JOBS - 1 ))" bash "$0" "$@"
 fi
 ARCH="$(uname -m)"
