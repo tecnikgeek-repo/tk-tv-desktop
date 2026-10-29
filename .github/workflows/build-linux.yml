@@ -5,9 +5,6 @@ name: Build Linux
 # così gira da Ubuntu 22.04 in su.
 on:
   workflow_dispatch:
-  # PROVVISORIO: prove dal ramo linux finché questo file non è su main (da togliere prima dell'unione)
-  push:
-    branches: ['linux']
 
 permissions:
   contents: write

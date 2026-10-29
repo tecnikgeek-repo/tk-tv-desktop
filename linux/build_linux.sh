@@ -109,6 +109,7 @@ TKTV_PROFILE=selftest QT_QPA_PLATFORM=offscreen timeout 90 "$OUT" --selftest "$S
 [ -f "$SHOT.err" ] && { echo "SELFTEST: libVLC non parte - $(cat "$SHOT.err")"; exit 1; }
 [ -f "$SHOT" ] || { echo "SELFTEST FALLITO: il programma non si avvia"; exit 1; }
 echo "   interfaccia OK"
+rm -rf "${XDG_DATA_HOME:-$HOME/.local/share}/tk-tv-player-selftest"
 
 echo "== selftest video: riproduce qualche secondo di un video di prova generato ora"
 PROVA="build/prova.ts"
@@ -170,7 +171,7 @@ if [ "${SKIP_UPDATE_TEST:-0}" != "1" ]; then
         echo "TEST AGGIORNAMENTO FALLITO"
         exit 1
     fi
-    rm -rf "$WORK"
+    rm -rf "$WORK" "${TMPDIR:-/tmp}/tk-tv-player-update"
     echo "   aggiornamento OK (file AppImage sostituito, firma sbagliata rifiutata)"
 fi
 echo "== Fatto: $OUT"
