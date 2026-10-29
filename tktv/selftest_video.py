@@ -172,16 +172,23 @@ def run(argv):
                 stato["t_fs"] = time.time()
             else:
                 stato["fase"] = "fatto"
-        elif stato["fase"] == "schermo intero" and time.time() - stato["t_fs"] > 2.5:
-            # lo schermo è quello dove sta il video (con più monitor non sempre win.screen() è già aggiornato)
+        elif stato["fase"] == "schermo intero":
+            # lo schermo è quello dove sta il video (con più monitor non sempre win.screen() è già aggiornato);
+            # si aspetta che il passaggio a schermo intero sia finito (fino a 10 s: la build gira a bassa priorità)
             from PySide6.QtCore import QPoint, QRect
             o = page.overlay
             video = QRect(page.video.mapToGlobal(QPoint(0, 0)), page.video.size())
             schermo = QGuiApplication.screenAt(video.center()) or win.screen()
             scr = schermo.geometry()
-            stato["fs"] = (win.isFullScreen() and video == scr,
-                           o is not None and o.isVisible() and o.geometry() == video,
-                           f"{scr.getRect()}", o.geometry().getRect() if o is not None else None)
+            pieno = win.isFullScreen() and video == scr
+            sopra = o is not None and o.isVisible() and o.geometry() == video
+            if pieno and sopra:
+                stato.setdefault("t_pieno", time.time())
+            else:
+                stato.pop("t_pieno", None)
+            if time.time() - stato.get("t_pieno", time.time()) < 1.0 and time.time() - stato["t_fs"] < 10:
+                return
+            stato["fs"] = (pieno, sopra, f"{scr.getRect()}", o.geometry().getRect() if o is not None else None)
             stato["immagine_fs"] = _immagine_video(page, os.path.splitext(out)[0] + "-schermo-intero.png")
             win.toggle_fullscreen()
             stato["fase"] = "fatto"
