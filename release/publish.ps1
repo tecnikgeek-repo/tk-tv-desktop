@@ -2,7 +2,9 @@
 # Uso:  powershell -ExecutionPolicy Bypass -File release\publish.ps1 -Notes "Novita 1|Novita 2"
 # Prerequisiti: VERSION alzata in tktv\__init__.py e commit fatto.
 # Mac e Linux hanno manifest e script loro: release/publish_mac.sh e release\publish_linux.ps1.
-param([Parameter(Mandatory = $true)][string]$Notes)
+param([Parameter(Mandatory = $true)][string]$Notes,
+    # commit e tag già inviati (via SSH il PC non ha le credenziali di GitHub)
+    [switch]$SenzaGitHub)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 Set-Location $root
@@ -95,12 +97,14 @@ Write-Host "   manifest e file online verificati"
 
 # --- codice sorgente di questa versione su GitHub (Informazioni > Licenze punta a .../tree/v<versione>)
 $gitRemote = if (@(git remote) -contains 'github') { 'github' } else { 'origin' }
+if (-not $SenzaGitHub) {
 if (-not (git tag -l "v$version")) {
     git tag "v$version"
     if ($LASTEXITCODE -ne 0) { throw "Creazione del tag v$version non riuscita" }
 }
 git push $gitRemote "v$version"
 if ($LASTEXITCODE -ne 0) { throw "Invio del tag v$version a GitHub non riuscito" }
+}
 
 # --- cartella tk-app di Dropbox: solo l'ultima versione
 Get-ChildItem $tkApp -Filter "$slug-*.zip" | Where-Object { $_.Name -ne "$slug-$version.zip" } | Remove-Item -Force
