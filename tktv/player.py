@@ -4,6 +4,7 @@ Il video di VLC è una finestra nativa: i widget Qt non possono disegnarci sopra
 quindi in una finestra trasparente «posseduta» dalla finestra principale, allineata all'area video,
 che raccoglie anche mouse, doppio clic e rotellina.
 """
+from tktv.errori import motivo_errore
 import ctypes
 import subprocess
 import sys
@@ -418,7 +419,7 @@ class PlayerPage(QWidget):
             self._ensure_player()
             media, _vlc = engine.make_media(ch)
         except Exception as exc:
-            self._show_message(str(exc))
+            self._show_message(str(exc) if isinstance(exc, RuntimeError) else motivo_errore(exc))
             return
         self._retried = False
         self.store.last_channel = ch.name  # per «Riparti dall'ultimo canale»

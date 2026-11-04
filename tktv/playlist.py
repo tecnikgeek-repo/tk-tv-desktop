@@ -8,6 +8,10 @@ from dataclasses import dataclass
 
 from tktv.util import app_data_dir
 
+
+class ErrorePlaylist(RuntimeError):
+    leggibile = True
+
 # indirizzi dei canali che tk-tv passa a VLC: solo flussi di rete. Niente file://, smb://, dshow://, screen://…
 # (una lista scaricata da internet non deve poter aprire file, cartelle condivise, webcam o lo schermo del computer)
 SCHEMI_FLUSSO = ("http", "https", "udp", "rtp", "rtsp", "rtmp")
@@ -125,22 +129,22 @@ def download(url):
             data = fh.read()
     else:
         if not url.lower().startswith(("http://", "https://")):
-            raise ValueError("Il link deve iniziare con http:// o https://")
+            raise ErrorePlaylist("Il link deve iniziare con http:// o https://")
         req = urllib.request.Request(url, headers={"User-Agent": "tk-tv"})
         try:
             ctx = _ssl_context() if url.lower().startswith("https") else None
             with urllib.request.urlopen(req, timeout=20, context=ctx) as resp:
                 data = resp.read()
         except urllib.error.HTTPError as exc:
-            raise RuntimeError(f"Errore HTTP {exc.code}") from None
+            raise ErrorePlaylist("Il server della lista ha rifiutato la richiesta: controlla il link.") from None
         except urllib.error.URLError as exc:
-            raise RuntimeError(f"Server non raggiungibile ({exc.reason})") from None
+            raise ErrorePlaylist("Server non raggiungibile: controlla il link e la connessione.") from None
         except TimeoutError:
-            raise RuntimeError("Il server non risponde (tempo scaduto)") from None
+            raise ErrorePlaylist("Il server non risponde (tempo scaduto)") from None
     text = data.decode("utf-8-sig", errors="replace")
     channels = parse(text)
     if not channels:
-        raise RuntimeError("Nessun canale trovato nella playlist")
+        raise ErrorePlaylist("Nessun canale trovato nella playlist")
     return text, channels
 
 

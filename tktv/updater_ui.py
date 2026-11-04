@@ -1,4 +1,5 @@
 """Interfaccia degli aggiornamenti: controllo in background e finestra di aggiornamento."""
+from tktv.errori import motivo_errore
 import html
 import os
 import sys
@@ -29,10 +30,10 @@ class CheckThread(QThread):
             self.checked.emit(fetch_manifest(self.url), "")
         except urllib.error.HTTPError as exc:
             # il server risponde: la connessione c'è, è il file degli aggiornamenti che manca o non va
-            self.checked.emit(None, f"Il server degli aggiornamenti non risponde correttamente (errore {exc.code}).\n"
+            self.checked.emit(None, "Il server degli aggiornamenti non risponde correttamente.\n"
                                     "Riprova più tardi.")
         except Exception as exc:
-            self.checked.emit(None, f"Verifica la connessione a internet.\n\n{exc}")
+            self.checked.emit(None, "Verifica la connessione a internet.")
 
 
 class DownloadThread(QThread):
@@ -56,7 +57,7 @@ class DownloadThread(QThread):
         except InterruptedError:
             self.failed.emit("")
         except Exception as exc:
-            self.failed.emit(str(exc))
+            self.failed.emit(motivo_errore(exc))
 
 
 class UpdateDialog(QDialog):
@@ -158,7 +159,7 @@ class UpdateDialog(QDialog):
         try:
             apply_update(path, new_version=self.manifest["version"])
         except Exception as exc:
-            self._failed(str(exc))
+            self._failed(motivo_errore(exc))
             return
         QTimer.singleShot(300, QApplication.instance().quit)
 

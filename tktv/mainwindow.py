@@ -1,4 +1,5 @@
 """Finestra principale: collega lista canali, player, impostazioni e informazioni."""
+from tktv.errori import motivo_errore
 import sys
 import threading
 
@@ -146,7 +147,7 @@ class MainWindow(QMainWindow):
             try:
                 self.loader.done.emit(gen, playlist.download(url), "")
             except Exception as exc:
-                self.loader.done.emit(gen, None, str(exc) or "Errore sconosciuto")
+                self.loader.done.emit(gen, None, motivo_errore(exc))
 
         self._pending_url = url
         threading.Thread(target=work, daemon=True).start()
